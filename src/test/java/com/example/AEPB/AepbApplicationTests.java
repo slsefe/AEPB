@@ -1,5 +1,7 @@
 package com.example.AEPB;
 
+import com.example.AEPB.airCoin.AirCoin;
+import com.example.AEPB.airCoin.IllegalAirCoinAmountException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -15,20 +17,8 @@ class AirCoinTest {
 		AirCoin anotherAirCoin = new AirCoin(1);
 
 		// when & then
-		assertThrows(NullPointerException.class, () -> oneAirCoin.equals(anotherAirCoin));
-	}
-
-	@Test
-	void should_return_false_when_compare_two_air_coin_amount_given_at_least_one_air_coin_amount_is_null() {
-		// given
-		final AirCoin oneAirCoin = new AirCoin(1);
-		final AirCoin anotherAirCoin = new AirCoin();
-
-		// when
-		final boolean isEqual = oneAirCoin.equals(anotherAirCoin);
-
-		// then
-		assertFalse(isEqual);
+		assertThrows(NullPointerException.class, () -> oneAirCoin.compare(anotherAirCoin));
+		assertThrows(NullPointerException.class, () -> anotherAirCoin.compare(oneAirCoin));
 	}
 
 	@Test
@@ -44,12 +34,8 @@ class AirCoinTest {
 		final AirCoin oneAirCoin = new AirCoin(10000);
 		final AirCoin anotherAirCoin = new AirCoin(10001);
 
-		// when
-		final boolean isEqual = oneAirCoin.equals(anotherAirCoin);
-
-		// then
-		assertFalse(isEqual);
-
+		// when & then
+		assertFalse(oneAirCoin.compare(anotherAirCoin));
 	}
 
 	@Test
@@ -59,10 +45,7 @@ class AirCoinTest {
 		final AirCoin oneAirCoin = new AirCoin(amount);
 		final AirCoin anotherAirCoin = new AirCoin(amount);
 
-		// when
-		final boolean isEqual = oneAirCoin.equals(anotherAirCoin);
-
-		// then
-		assertTrue(isEqual);
+		// when & then
+		assertTrue(oneAirCoin.compare(anotherAirCoin));
 	}
 }
