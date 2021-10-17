@@ -1,10 +1,8 @@
-package com.example.AEPB;
+package com.example.AEPB.parkingLot;
 
 import com.example.AEPB.parkingLot.exception.CarExistingException;
 import com.example.AEPB.parkingLot.exception.NoTicketexception;
-import com.example.AEPB.parkingLot.ParkingLot;
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
-import com.example.AEPB.parkingLot.ParkingTicket;
 import com.example.AEPB.parkingLot.exception.TicketIsUsedException;
 import com.example.AEPB.parkingLot.exception.TicketNotMatchedException;
 import org.junit.jupiter.api.BeforeEach;

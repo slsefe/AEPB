@@ -1,4 +1,4 @@
-package com.example.AEPB;
+package com.example.AEPB.airCoin;
 
 public class AirCoin {
     public static int MIN_AMOUNT = 0;
