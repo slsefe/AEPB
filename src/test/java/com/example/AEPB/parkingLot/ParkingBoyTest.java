@@ -1,5 +1,6 @@
 package com.example.AEPB.parkingLot;
 
+import com.example.AEPB.parkingLot.exception.InValidParkingTicketException;
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
 import org.junit.jupiter.api.Test;
 
@@ -96,6 +97,16 @@ class ParkingBoyTest {
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> parkingBoy.pickUp(parkingTicket));
+    }
+
+    @Test
+    void should_throw_exception_when_pick_up_given_invalid_ticket() {
+        // given
+        final ParkingBoy parkingBoy = new ParkingBoy();
+        ParkingTicket parkingTicket = new ParkingTicket(1);
+
+        // when & then
+        assertThrows(InValidParkingTicketException.class, () -> parkingBoy.pickUp(parkingTicket));
     }
 
 }
