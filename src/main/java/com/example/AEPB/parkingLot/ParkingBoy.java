@@ -25,6 +25,9 @@ public class ParkingBoy {
     }
 
     public Vehicle pickUp(ParkingTicket parkingTicket) {
+        if (parkingTicket == null) {
+            throw new IllegalArgumentException("parking ticket is null");
+        }
         final int parkingLotNumber = parkingTicket.getParkingLotNumber();
         final ParkingLot parkingLot = parkingLots[parkingLotNumber - 1];
         return parkingLot.pickUp(parkingTicket);
