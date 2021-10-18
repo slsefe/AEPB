@@ -1,64 +1,50 @@
 package com.example.AEPB.parkingLot;
 
-import com.example.AEPB.parkingLot.exception.CarExistingException;
-import com.example.AEPB.parkingLot.exception.NoTicketexception;
+import com.example.AEPB.parkingLot.exception.VehicleExistingException;
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
-import com.example.AEPB.parkingLot.exception.TicketIsUsedException;
-import com.example.AEPB.parkingLot.exception.TicketNotMatchedException;
+import com.example.AEPB.parkingLot.exception.InValidParkingTicketException;
 
 import java.util.HashMap;
 
 public class ParkingLot {
 
-    private static int MAX_SPACE = 50;
-    private HashMap<String, ParkingTicket> publishedTickets;
-    private HashMap<String, ParkingTicket> expiredTickets;
+    private static final int MAX_SPACE = 50;
+    private final HashMap<ParkingTicket, Vehicle> tickets;
 
     public ParkingLot() {
-        this.publishedTickets = new HashMap<>();
-        this.expiredTickets = new HashMap<>();
+        this.tickets = new HashMap<>();
     }
 
-    public ParkingTicket checkIn(String carPlateNumber) {
-        if (publishedTickets.size() == MAX_SPACE) {
+    public ParkingTicket park(Vehicle vehicle) {
+        if (vehicle == null) {
+            throw new IllegalArgumentException("vehicle can not be null");
+        }
+
+        if (tickets.size() == MAX_SPACE) {
             throw new ParkingLotFullException("parking lot is full");
         }
 
-        if (publishedTickets.containsKey(carPlateNumber)) {
-            throw new CarExistingException("car is already in parking lot");
+        if (tickets.containsValue(vehicle)) {
+            throw new VehicleExistingException("vehicle is already in parking lot");
         }
 
-        final ParkingTicket ticket = new ParkingTicket(carPlateNumber);
-        publishedTickets.put(carPlateNumber, ticket);
+        final ParkingTicket ticket = new ParkingTicket();
+        tickets.put(ticket, vehicle);
         return ticket;
     }
 
-    public boolean pickUp(ParkingTicket givenTicket) {
-        if (givenTicket == null) {
-            throw new NoTicketexception("ticket is null");
+    public Vehicle pickUp(ParkingTicket parkingTicket) {
+        if (parkingTicket == null) {
+            throw new IllegalArgumentException("ticket can not be null");
         }
 
-        final String carPlateNumber = givenTicket.getCarPlateNumber();
-
-        if (!publishedTickets.containsKey(carPlateNumber) && !expiredTickets.containsKey(carPlateNumber)) {
-            throw new TicketNotMatchedException("given ticket and existing ticket is not match");
+        if (!tickets.containsKey(parkingTicket)) {
+            throw new InValidParkingTicketException("given ticket and existing ticket is not match");
         }
 
-        if (!publishedTickets.containsKey(carPlateNumber) && expiredTickets.containsKey(carPlateNumber)) {
-            final ParkingTicket usedTicket = expiredTickets.get(carPlateNumber);
-            if (usedTicket.equals(givenTicket)) {
-                throw new TicketIsUsedException("ticket is already used");
-            }
-        }
+        final Vehicle vehicle = tickets.get(parkingTicket);
+        tickets.remove(parkingTicket);
+        return vehicle;
 
-        final ParkingTicket publishedTicket = publishedTickets.get(carPlateNumber);
-        if (!publishedTicket.equals(givenTicket)) {
-            throw new TicketNotMatchedException("given ticket and existing ticket is not match");
-        }
-
-        publishedTickets.remove(carPlateNumber);
-        expiredTickets.put(carPlateNumber, publishedTicket);
-
-        return true;
     }
 }

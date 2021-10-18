@@ -1,16 +1,14 @@
 package com.example.AEPB.parkingLot;
 
-import com.example.AEPB.parkingLot.exception.CarExistingException;
-import com.example.AEPB.parkingLot.exception.NoTicketexception;
+import com.example.AEPB.parkingLot.exception.InValidParkingTicketException;
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
-import com.example.AEPB.parkingLot.exception.TicketIsUsedException;
-import com.example.AEPB.parkingLot.exception.TicketNotMatchedException;
+import com.example.AEPB.parkingLot.exception.VehicleExistingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ParkingLotTest {
 
@@ -22,96 +20,102 @@ class ParkingLotTest {
     }
 
     @Test
-    void should_success_when_parking_given_parking_lot_has_1_space() {
+    void should_return_ticket_when_park_given_parking_lot_has_1_space() {
         // given
-        String carPlateNumberTemplate = "00000";
-        String newCarPlateNumber;
         for (int i = 0; i < 49; i++) {
-            newCarPlateNumber = carPlateNumberTemplate + String.format("%03d", i);
-            parkingLot.checkIn(newCarPlateNumber);
+            parkingLot.park(new Vehicle());
         }
 
         // when
-        final ParkingTicket ticket = parkingLot.checkIn("99999");
+        final ParkingTicket ticket = parkingLot.park(new Vehicle());
 
         // then
         assertNotNull(ticket);
     }
 
     @Test
-    void should_success_when_parking_given_parking_lot_has_50_spaces() {
+    void should_return_ticket_when_park_given_parking_lot_has_50_spaces() {
         // given
 
         // when
-        final ParkingTicket ticket = parkingLot.checkIn("99999");
+        final ParkingTicket ticket = parkingLot.park(new Vehicle());
 
         // then
         assertNotNull(ticket);
     }
 
     @Test
-    void should_throw_exception_when_parking_given_parking_lot_has_no_space() {
+    void should_throw_exception_when_park_given_no_vehicle() {
         // given
-        String carPlateNumberTemplate = "00000";
-        String newCarPlateNumber;
+        Vehicle vehicle = null;
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> parkingLot.park(vehicle));
+    }
+
+    @Test
+    void should_throw_exception_when_park_given_parking_lot_has_no_space() {
+        // given
         for (int i = 0; i < 50; i++) {
-            newCarPlateNumber = carPlateNumberTemplate + String.format("%03d", i);
-            parkingLot.checkIn(newCarPlateNumber);
+            parkingLot.park(new Vehicle());
         }
 
         // when & then
-        assertThrows(ParkingLotFullException.class, () -> parkingLot.checkIn("99999"));
-
+        assertThrows(ParkingLotFullException.class, () -> parkingLot.park(new Vehicle()));
     }
 
     @Test
-    void should_throw_exception_when_parking_given_car_is_already_in_parting_lot() {
+    void should_throw_exception_when_park_given_vehicle_is_already_in_parting_lot() {
         // given
-        String carPlateNumber = "77777";
-        parkingLot.checkIn(carPlateNumber);
+        final Vehicle vehicle = new Vehicle();
+        parkingLot.park(vehicle);
 
         // when & then
-        assertThrows(CarExistingException.class, () -> parkingLot.checkIn(carPlateNumber));
+        assertThrows(VehicleExistingException.class, () -> parkingLot.park(vehicle));
     }
 
     @Test
-    void should_success_when_pick_up_given_a_valid_ticket() {
+    void should_return_vehicle_when_pick_up_given_a_ticket() {
         // given
-        final ParkingTicket ticket = parkingLot.checkIn("5555");
+        final Vehicle vehicle1 = new Vehicle();
+        final ParkingTicket ticket = parkingLot.park(vehicle1);
 
-        // when & then
-        assertTrue(parkingLot.pickUp(ticket));
+        // when
+        final Vehicle vehicle2 = parkingLot.pickUp(ticket);
+
+        // then
+        assertEquals(vehicle1, vehicle2);
     }
 
     @Test
-    void should_fail_when_pick_up_given_no_ticket() {
+    void should_throw_exception_when_pick_up_given_no_ticket() {
         // given
         ParkingTicket ticket = null;
 
         // when & then
-        assertThrows(NoTicketexception.class, () -> parkingLot.pickUp(ticket));
+        assertThrows(IllegalArgumentException.class, () -> parkingLot.pickUp(ticket));
     }
 
     @Test
-    void should_throw_exception_when_pick_up_given_ticket_number_and_published_ticket_number_is_not_match() {
+    void should_throw_exception_when_pick_up_given_invalid_ticket() {
         // given
-        final String carPlateNumber = "55555";
-        parkingLot.checkIn(carPlateNumber);
-        final ParkingTicket ticket = new ParkingTicket(carPlateNumber);
+        for (int i = 0; i < 50; i++) {
+            parkingLot.park(new Vehicle());
+        }
 
         // when & then
-        assertThrows(TicketNotMatchedException.class, () -> parkingLot.pickUp(ticket));
+        final ParkingTicket ticket = new ParkingTicket();
+        assertThrows(InValidParkingTicketException.class, () -> parkingLot.pickUp(ticket));
     }
 
     @Test
-    void should_throw_exception_when_pick_up_given_a_already_used_ticket() {
+    void should_throw_exception_when_pick_up_given_used_ticket() {
         // given
-        final String carPlateNumber = "55555";
-        final ParkingTicket ticket = parkingLot.checkIn(carPlateNumber);
+        final Vehicle vehicle = new Vehicle();
+        final ParkingTicket ticket = parkingLot.park(vehicle);
         parkingLot.pickUp(ticket);
 
         // when & then
-        assertThrows(TicketIsUsedException.class, () -> parkingLot.pickUp(ticket));
-
+        assertThrows(InValidParkingTicketException.class, () -> parkingLot.pickUp(ticket));
     }
 }
