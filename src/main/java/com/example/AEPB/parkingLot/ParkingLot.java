@@ -1,8 +1,8 @@
 package com.example.AEPB.parkingLot;
 
-import com.example.AEPB.parkingLot.exception.VehicleExistingException;
-import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
 import com.example.AEPB.parkingLot.exception.InValidParkingTicketException;
+import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
+import com.example.AEPB.parkingLot.exception.VehicleExistingException;
 
 import java.util.HashMap;
 

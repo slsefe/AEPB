@@ -10,10 +10,6 @@ public class ParkingTicket {
         this.ticketNumber = UUID.randomUUID().toString();
     }
 
-    public String getCarPlateNumber() {
-        return ticketNumber;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
