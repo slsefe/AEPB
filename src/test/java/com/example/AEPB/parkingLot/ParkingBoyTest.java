@@ -74,4 +74,18 @@ class ParkingBoyTest {
         assertThrows(IllegalArgumentException.class, () -> parkingBoy.park(vehicle));
     }
 
+    @Test
+    void should_return_vehicle_when_pick_up_given_valid_ticket() {
+        // given
+        final ParkingBoy parkingBoy = new ParkingBoy();
+        final Vehicle vehicle = new Vehicle();
+        final ParkingTicket parkingTicket = parkingBoy.park(vehicle);
+
+        // when
+        final Vehicle pickedVehicle = parkingBoy.pickUp(parkingTicket);
+
+        // then
+        assertEquals(vehicle, pickedVehicle);
+    }
+
 }
