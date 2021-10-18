@@ -18,8 +18,7 @@ public class ParkingBoy {
                 continue;
             } else {
                 int parkingLotNumber = i + 1;
-                final ParkingTicket parkingTicket = parkingLots[i].park(vehicle, parkingLotNumber);
-                return parkingTicket;
+                return parkingLots[i].park(vehicle, parkingLotNumber);
             }
         }
         throw new ParkingLotFullException("All parking lots are full");
