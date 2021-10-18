@@ -88,4 +88,14 @@ class ParkingBoyTest {
         assertEquals(vehicle, pickedVehicle);
     }
 
+    @Test
+    void should_throw_exception_when_pick_up_given_no_ticket() {
+        // given
+        final ParkingBoy parkingBoy = new ParkingBoy();
+        ParkingTicket parkingTicket = null;
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> parkingBoy.pickUp(parkingTicket));
+    }
+
 }
