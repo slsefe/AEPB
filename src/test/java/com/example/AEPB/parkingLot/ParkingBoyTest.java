@@ -64,4 +64,14 @@ class ParkingBoyTest {
         assertThrows(ParkingLotFullException.class, () -> parkingBoy.park(new Vehicle()));
     }
 
+    @Test
+    void should_throw_exception_when_park_given_vehicle_is_null() {
+        // given
+        final ParkingBoy parkingBoy = new ParkingBoy();
+        Vehicle vehicle = null;
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> parkingBoy.park(vehicle));
+    }
+
 }
