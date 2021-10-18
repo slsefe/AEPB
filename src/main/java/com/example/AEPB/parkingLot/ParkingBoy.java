@@ -1,5 +1,7 @@
 package com.example.AEPB.parkingLot;
 
+import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
+
 public class ParkingBoy {
     private final static int NUMBER_OF_PARKING_LOT = 10;
     private final ParkingLot[] parkingLots = new ParkingLot[NUMBER_OF_PARKING_LOT];
@@ -20,7 +22,7 @@ public class ParkingBoy {
                 return parkingTicket;
             }
         }
-        return null;
+        throw new ParkingLotFullException("All parking lots are full");
     }
 
     public Vehicle pickUp(ParkingTicket parkingTicket) {
