@@ -10,12 +10,17 @@ public class ParkingBoy {
         }
     }
 
-    public ParkingLot[] getParkingLots() {
-        return parkingLots;
-    }
-
     public ParkingTicket park(Vehicle vehicle) {
-        return parkingLots[0].park(vehicle, 1);
+        for (int i = 0; i < NUMBER_OF_PARKING_LOT; i++) {
+            if (parkingLots[i].isFull()) {
+                continue;
+            } else {
+                int parkingLotNumber = i + 1;
+                final ParkingTicket parkingTicket = parkingLots[i].park(vehicle, parkingLotNumber);
+                return parkingTicket;
+            }
+        }
+        return null;
     }
 
     public Vehicle pickUp(ParkingTicket parkingTicket) {

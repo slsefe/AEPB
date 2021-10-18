@@ -65,4 +65,8 @@ public class ParkingLot {
         return vehicle;
 
     }
+
+    public boolean isFull() {
+        return tickets.size() == MAX_SPACE;
+    }
 }
