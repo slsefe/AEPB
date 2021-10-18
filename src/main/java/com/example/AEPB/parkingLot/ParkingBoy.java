@@ -24,6 +24,8 @@ public class ParkingBoy {
     }
 
     public Vehicle pickUp(ParkingTicket parkingTicket) {
-        return null;
+        final int parkingLotNumber = parkingTicket.getParkingLotNumber();
+        final ParkingLot parkingLot = parkingLots[parkingLotNumber - 1];
+        return parkingLot.pickUp(parkingTicket);
     }
 }
