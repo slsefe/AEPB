@@ -1,5 +1,6 @@
 package com.example.AEPB.parkingLot;
 
+import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,6 +50,18 @@ class ParkingBoyTest {
 
         // then
         assertEquals(1, parkingTicket.getParkingLotNumber());
+    }
+
+    @Test
+    void should_throw_exception_when_park_given_all_parking_lots_are_full() {
+        // given
+        final ParkingBoy parkingBoy = new ParkingBoy();
+        for (int i = 0; i < 500; i++) {
+            parkingBoy.park(new Vehicle());
+        }
+
+        // when & then
+        assertThrows(ParkingLotFullException.class, () -> parkingBoy.park(new Vehicle()));
     }
 
 }
