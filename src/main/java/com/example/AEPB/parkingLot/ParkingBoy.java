@@ -8,7 +8,7 @@ public class ParkingBoy {
     }
 
     public ParkingTicket park(Vehicle vehicle) {
-        return null;
+        return parkingLots[0].park(vehicle, 1);
     }
 
     public Vehicle pickUp(ParkingTicket parkingTicket) {
