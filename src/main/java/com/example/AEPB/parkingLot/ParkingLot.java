@@ -16,17 +16,7 @@ public class ParkingLot {
     }
 
     public ParkingTicket park(Vehicle vehicle) {
-        if (vehicle == null) {
-            throw new IllegalArgumentException("vehicle can not be null");
-        }
-
-        if (tickets.size() == MAX_SPACE) {
-            throw new ParkingLotFullException("parking lot is full");
-        }
-
-        if (tickets.containsValue(vehicle)) {
-            throw new VehicleExistingException("vehicle is already in parking lot");
-        }
+        validateParkParameters(vehicle);
 
         final ParkingTicket ticket = new ParkingTicket();
         tickets.put(ticket, vehicle);
@@ -34,21 +24,25 @@ public class ParkingLot {
     }
 
     public ParkingTicket park(Vehicle vehicle, int parkingLotNumber) {
+        validateParkParameters(vehicle);
+
+        final ParkingTicket ticket = new ParkingTicket(parkingLotNumber);
+        tickets.put(ticket, vehicle);
+        return ticket;
+    }
+
+    private void validateParkParameters(Vehicle vehicle) {
         if (vehicle == null) {
             throw new IllegalArgumentException("vehicle can not be null");
         }
 
-        if (tickets.size() == MAX_SPACE) {
+        if (isFull()) {
             throw new ParkingLotFullException("parking lot is full");
         }
 
         if (tickets.containsValue(vehicle)) {
             throw new VehicleExistingException("vehicle is already in parking lot");
         }
-
-        final ParkingTicket ticket = new ParkingTicket(parkingLotNumber);
-        tickets.put(ticket, vehicle);
-        return ticket;
     }
 
     public Vehicle pickUp(ParkingTicket parkingTicket) {

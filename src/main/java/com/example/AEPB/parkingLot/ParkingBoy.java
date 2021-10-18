@@ -14,9 +14,7 @@ public class ParkingBoy {
 
     public ParkingTicket park(Vehicle vehicle) {
         for (int i = 0; i < NUMBER_OF_PARKING_LOT; i++) {
-            if (parkingLots[i].isFull()) {
-                continue;
-            } else {
+            if (!parkingLots[i].isFull()) {
                 int parkingLotNumber = i + 1;
                 return parkingLots[i].park(vehicle, parkingLotNumber);
             }

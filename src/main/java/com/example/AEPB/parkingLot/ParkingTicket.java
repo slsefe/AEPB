@@ -22,10 +22,6 @@ public class ParkingTicket {
         this.parkingLotNumber = parkingLotNumber;
     }
 
-    public String getTicketNumber() {
-        return ticketNumber;
-    }
-
     public int getParkingLotNumber() {
         return parkingLotNumber;
     }
