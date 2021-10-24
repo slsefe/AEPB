@@ -17,9 +17,4 @@ public class AirCoin {
         return amount;
     }
 
-    public Boolean compare(AirCoin airCoin) {
-        return this.getAmount() == airCoin.getAmount();
-    }
-
-
 }
