@@ -3,16 +3,19 @@ package com.example.AEPB.parkingLot;
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
- * parking boy can park and pickup vehicle
- * if all parking lots are full, throw exception
- * else, park vehicle in first not-full parking lot
+ * customer can park and pickup vehicle
+ * customer can park vehicle in any not-full parking lot
  */
-public class ParkingBoy implements Parkable, PickUp {
+public class Customer implements Parkable, PickUp {
 
     private final ParkingLotFactory parkingLotFactory = new ParkingLotFactory();
+    private final Random random = new Random();
 
     @Override
     public ParkingTicket park(Vehicle vehicle) {
@@ -25,13 +28,15 @@ public class ParkingBoy implements Parkable, PickUp {
         return parkingLotFactory.pickUp(parkingTicket);
     }
 
-    public Integer findParkingLotNo() {
-        return parkingLotFactory.getParkingLots().entrySet().stream()
+    private Integer findParkingLotNo() {
+        final List<Integer> parkingLotNos = parkingLotFactory.getParkingLots().entrySet().stream()
                 .sorted(Comparator.comparingInt(Map.Entry::getKey))
                 .filter(parkingLot -> parkingLot.getValue().isNotFull())
-                .findFirst()
                 .map(Map.Entry::getKey)
-                .orElseThrow(() -> new ParkingLotFullException("All parking lots are full"));
+                .collect(Collectors.toList());
+        if (parkingLotNos.isEmpty()) {
+            throw new ParkingLotFullException("All parking lots are full");
+        }
+        return parkingLotNos.get(random.nextInt(parkingLotNos.size()));
     }
-
 }

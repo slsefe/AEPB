@@ -6,11 +6,10 @@ import java.util.Comparator;
 import java.util.Map;
 
 /**
- * parking boy can park and pickup vehicle
- * if all parking lots are full, throw exception
- * else, park vehicle in first not-full parking lot
+ * smart parking boy can park and pickup vehicle.
+ * smart parking boy should park vehicle in first most parking place parking lot.
  */
-public class ParkingBoy implements Parkable, PickUp {
+public class SmartParkingBoy extends ParkingBoy {
 
     private final ParkingLotFactory parkingLotFactory = new ParkingLotFactory();
 
@@ -21,17 +20,12 @@ public class ParkingBoy implements Parkable, PickUp {
     }
 
     @Override
-    public Vehicle pickUp(ParkingTicket parkingTicket) {
-        return parkingLotFactory.pickUp(parkingTicket);
-    }
-
     public Integer findParkingLotNo() {
+        final Integer curMaxSpace = parkingLotFactory.getMaxSpace();
         return parkingLotFactory.getParkingLots().entrySet().stream()
-                .sorted(Comparator.comparingInt(Map.Entry::getKey))
-                .filter(parkingLot -> parkingLot.getValue().isNotFull())
-                .findFirst()
+                .filter(parkingLot -> parkingLot.getValue().curSpace().equals(curMaxSpace))
+                .min(Comparator.comparingInt(Map.Entry::getKey))
                 .map(Map.Entry::getKey)
                 .orElseThrow(() -> new ParkingLotFullException("All parking lots are full"));
     }
-
 }
