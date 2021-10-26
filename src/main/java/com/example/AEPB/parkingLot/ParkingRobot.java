@@ -1,18 +1,17 @@
 package com.example.AEPB.parkingLot;
 
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
+import com.example.AEPB.parkingLot.interfaces.Parkable;
 
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * smart parking boy can park and pickup vehicle.
- * smart parking boy should park vehicle in first most parking place parking lot.
- */
-public class SmartParkingBoy extends ParkingBoy {
+public class ParkingRobot implements Parkable {
 
-    public SmartParkingBoy(List<ParkingLot> parkingLots) {
-        super(parkingLots);
+    private final List<ParkingLot> parkingLots;
+
+    public ParkingRobot(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
     }
 
     @Override
@@ -21,10 +20,10 @@ public class SmartParkingBoy extends ParkingBoy {
             throw new IllegalArgumentException("vehicle can not be null");
         }
 
-        final ParkingLot parkingLot = getParkingLots().stream()
+        final ParkingLot parkingLot = parkingLots.stream()
                 .filter(ParkingLot::isNotFull)
-                .min(Comparator.comparing(ParkingLot::vacantSpaces, Comparator.reverseOrder())
-                        .thenComparing(ParkingLot::vacantSpaces))
+                .min(Comparator.comparing(ParkingLot::calculateVacancyRate, Comparator.reverseOrder())
+                        .thenComparing(ParkingLot::getParkingLotNo))
                 .orElseThrow(() -> new ParkingLotFullException("All parking lots are full."));
 
         return parkingLot.park(vehicle);

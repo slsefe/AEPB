@@ -1,37 +1,52 @@
 package com.example.AEPB.parkingLot;
 
+import com.example.AEPB.parkingLot.exception.InValidParkingTicketException;
 import com.example.AEPB.parkingLot.exception.ParkingLotFullException;
+import com.example.AEPB.parkingLot.interfaces.Parkable;
+import com.example.AEPB.parkingLot.interfaces.Pickupable;
 
 import java.util.Comparator;
-import java.util.Map;
+import java.util.List;
 
 /**
  * parking boy can park and pickup vehicle
  * if all parking lots are full, throw exception
  * else, park vehicle in first not-full parking lot
  */
-public class ParkingBoy implements Parkable, PickUp {
+public class ParkingBoy implements Parkable, Pickupable {
 
-    private final ParkingLotFactory parkingLotFactory = new ParkingLotFactory();
+    private final List<ParkingLot> parkingLots;
+
+    public ParkingBoy(List<ParkingLot> parkingLots) {
+        this.parkingLots = parkingLots;
+    }
+
+    public List<ParkingLot> getParkingLots() {
+        return parkingLots;
+    }
 
     @Override
     public ParkingTicket park(Vehicle vehicle) {
-        final Integer parkingLotNo = findParkingLotNo();
-        return parkingLotFactory.park(parkingLotNo, vehicle);
+        if (vehicle == null) {
+            throw new IllegalArgumentException("vehicle can not be null");
+        }
+
+        final ParkingLot parkingLot = parkingLots.stream()
+                .filter(ParkingLot::isNotFull)
+                .min(Comparator.comparingInt(ParkingLot::getParkingLotNo))
+                .orElseThrow(() -> new ParkingLotFullException("All parking lots are full"));
+
+        return parkingLot.park(vehicle);
     }
 
     @Override
-    public Vehicle pickUp(ParkingTicket parkingTicket) {
-        return parkingLotFactory.pickUp(parkingTicket);
-    }
-
-    public Integer findParkingLotNo() {
-        return parkingLotFactory.getParkingLots().entrySet().stream()
-                .sorted(Comparator.comparingInt(Map.Entry::getKey))
-                .filter(parkingLot -> parkingLot.getValue().isNotFull())
+    public Vehicle pickup(ParkingTicket parkingTicket) {
+        final ParkingLot parkingLot = parkingLots.stream()
+                .filter(lot -> lot.getParkingLotNo().equals(parkingTicket.getParkingLotNo()))
                 .findFirst()
-                .map(Map.Entry::getKey)
-                .orElseThrow(() -> new ParkingLotFullException("All parking lots are full"));
+                .orElseThrow(InValidParkingTicketException::new);
+
+        return parkingLot.pickup(parkingTicket);
     }
 
 }
