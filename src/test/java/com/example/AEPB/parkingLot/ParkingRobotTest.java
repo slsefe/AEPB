@@ -5,16 +5,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ParkingRobotTest {
 
     private ParkingRobot parkingRobot;
+    private ParkingBoy parkingBoy;
+    private SmartParkingBoy smartParkingBoy;
 
     @Test
     void should_throw_exception_when_park_given_no_vehicle() {
         // given
-        parkingRobot = new ParkingRobot(List.of());
+        parkingRobot = new ParkingRobot(List.of(new ParkingLot(1, 1)));
         Vehicle vehicle = null;
 
         // when & then
@@ -82,6 +85,46 @@ class ParkingRobotTest {
 
         // then
         assertEquals(2, ticket.getParkingLotNo());
+    }
+
+    @Test
+    void should_return_vehicle_when_parking_boy_pickup_given_parking_robot_park_vehicle() {
+        // given
+        List<ParkingLot> parkingLots = List.of(
+                new ParkingLot(1, 3),
+                new ParkingLot(2, 1),
+                new ParkingLot(3, 1)
+        );
+        parkingRobot = new ParkingRobot(parkingLots);
+        parkingBoy = new ParkingBoy(parkingLots);
+        final Vehicle vehicle = new Vehicle();
+        final ParkingTicket ticket = parkingRobot.park(vehicle);
+
+        // when
+        final Vehicle pickupVehicle = parkingBoy.pickup(ticket);
+
+        // then
+        assertEquals(vehicle, pickupVehicle);
+    }
+
+    @Test
+    void should_return_vehicle_when_smart_parking_boy_pickup_given_parking_robot_park_vehicle() {
+        // given
+        List<ParkingLot> parkingLots = List.of(
+                new ParkingLot(1, 3),
+                new ParkingLot(2, 1),
+                new ParkingLot(3, 1)
+        );
+        parkingRobot = new ParkingRobot(parkingLots);
+        smartParkingBoy = new SmartParkingBoy(parkingLots);
+        final Vehicle vehicle = new Vehicle();
+        final ParkingTicket ticket = parkingRobot.park(vehicle);
+
+        // when
+        final Vehicle pickupVehicle = smartParkingBoy.pickup(ticket);
+
+        // then
+        assertEquals(vehicle, pickupVehicle);
     }
 
 }
